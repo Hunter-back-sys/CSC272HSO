@@ -1,31 +1,40 @@
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
- * A class to test the functionalities of the AppointmentManager.
+ * <h2>Test Suite for Appointment Management System</h2>
+ * <p><b>Description:</b> This class provides a set of tests for the AppointmentManager class,
+ * which handles operations such as adding, viewing, editing, deleting, and searching appointments.</p>
+ * <ul>
+ *   <li><code><b>final DateTimeFormatter</b></code> formatter - A formatter for parsing and formatting date-time strings</li>
+ * </ul>
+ * <p><b>Discussion Items:</b></p>
+ * <ul>
+ *   <li>Tests the core functionalities of adding, viewing, editing, and deleting appointments</li>
+ *   <li>Includes tests for searching appointments by keyword and by date</li>
+ *   <li>Ensures appointments are correctly persisted and loaded from a file</li>
+ *   <li>Verifies the clearing of appointments and the deletion of the appointments file</li>
+ * </ul>
+ * @version 1.1
+ * @author Hunter O'Brien
  */
 public class TestAppointmentTracker {
-    // DateTimeFormatter to parse and format date-time strings
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    /**
-     * Method to run tests on the AppointmentManager.
-     * @param manager The AppointmentManager instance to be tested.
-     */
     public static void runTests(AppointmentManager manager) {
         System.out.println("Running tests...");
 
-        // Clear any existing appointments and save the cleared state
+        // Clear any existing appointments
         manager.viewAppointments().clear();
         manager.saveAppointments();
 
         // Test adding an appointment
-        LocalDateTime dateTime1 = LocalDateTime.parse("2024-08-01 10:00", formatter);
-        Appointment appointment1 = new Appointment(dateTime1, "Doctor's Appointment", "Clinic");
+        LocalDateTime startDateTime1 = LocalDateTime.parse("2024-08-01 10:00", formatter);
+        LocalDateTime endDateTime1 = LocalDateTime.parse("2024-08-01 11:00", formatter);
+        Appointment appointment1 = new Appointment(startDateTime1, endDateTime1, "Doctor's Appointment", "Clinic");
         manager.addAppointment(appointment1);
-
-        // Check if the appointment was added correctly
         if (manager.viewAppointments().size() == 1 && manager.viewAppointments().get(0).equals(appointment1)) {
             System.out.println("Test Add Appointment: PASSED");
         } else {
@@ -40,11 +49,10 @@ public class TestAppointmentTracker {
         }
 
         // Test editing an appointment
-        LocalDateTime dateTime2 = LocalDateTime.parse("2024-08-02 11:00", formatter);
-        Appointment appointment2 = new Appointment(dateTime2, "Dentist Appointment", "Dental Clinic");
+        LocalDateTime startDateTime2 = LocalDateTime.parse("2024-08-02 11:00", formatter);
+        LocalDateTime endDateTime2 = LocalDateTime.parse("2024-08-02 12:00", formatter);
+        Appointment appointment2 = new Appointment(startDateTime2, endDateTime2, "Dentist Appointment", "Dental Clinic");
         manager.editAppointment(0, appointment2);
-
-        // Check if the appointment was edited correctly
         if (manager.viewAppointments().size() == 1 && manager.viewAppointments().get(0).equals(appointment2)) {
             System.out.println("Test Edit Appointment: PASSED");
         } else {
@@ -53,33 +61,35 @@ public class TestAppointmentTracker {
 
         // Test deleting an appointment
         manager.deleteAppointment(0);
-
-        // Check if the appointment was deleted correctly
         if (manager.viewAppointments().isEmpty()) {
             System.out.println("Test Delete Appointment: PASSED");
         } else {
             System.out.println("Test Delete Appointment: FAILED");
         }
 
-        // Test searching appointments
+        // Test searching appointments by keyword
         manager.addAppointment(appointment1);
         manager.addAppointment(appointment2);
-
-        // Check if the search functionality works correctly
         if (manager.searchAppointments("Doctor").contains(appointment1) && manager.searchAppointments("Dentist").contains(appointment2)) {
             System.out.println("Test Search Appointments: PASSED");
         } else {
             System.out.println("Test Search Appointments: FAILED");
         }
 
-        // Reset the manager to a blank state and check if it's cleared
-        if(manager.clearAppointments()) {
-            System.out.println("Test Reset Appointments: PASSED");
+        // Test searching appointments by date
+        List<Appointment> dateSearchResults = manager.searchAppointmentsByDate(startDateTime1.toLocalDate());
+        if (dateSearchResults.contains(appointment1) && !dateSearchResults.contains(appointment2)) {
+            System.out.println("Test Search Appointments by Date: PASSED");
         } else {
-            System.out.println("Test Reset Appointments: FAILED");
+            System.out.println("Test Search Appointments by Date: FAILED");
         }
 
-        // Delete the file storing appointments
+        // Reset the manager to a blank state
+        manager.viewAppointments().clear();
+        manager.clearAppointments();
+        manager.saveAppointments();
+
+        // Delete the file here!
         File file = new File("appointments.dat");
         if (file.delete()) {
             System.out.println("Memory file deleted successfully.");

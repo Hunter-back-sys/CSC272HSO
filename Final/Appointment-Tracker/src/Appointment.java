@@ -1,58 +1,85 @@
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 /**
- * <h2>Appointment.java - A class to represent an appointment with a date, description, and location.</h2>
- * <p>This class implements Serializable and provides methods to get and set the appointment details, as well as to compare appointments and convert them to a string.</p>
- *
- * <p><b>Problem statement:</b> Create a class to represent an appointment, including date, description, and location, with methods to manipulate and display these details.</p>
- *
- * <div style="text-align: center;"><code><b>public class Appointment implements Serializable</b></code></div>
- *
+ * <h2>Manages appointments with start and end times, descriptions, and locations</h2>
+ * <p><b>Description:</b> This class has four private instance variables:</p>
+ * <ul>
+ *   <li><code><b>LocalDateTime</b></code> startDateTime - The start date and time of the appointment</li>
+ *   <li><code><b>LocalDateTime</b></code> endDateTime - The end date and time of the appointment</li>
+ *   <li><code><b>String</b></code> description - The description of the appointment</li>
+ *   <li><code><b>String</b></code> location - The location of the appointment</li>
+ * </ul>
+ * <p><b>Discussion Items:</b></p>
+ * <ul>
+ *   <li>All instance variables are <code>Private</code></li>
+ *   <li>Provides getter and setter methods for all instance variables</li>
+ *   <li>Includes a <code><b>toString</b></code> method for a formatted string representation of the appointment</li>
+ * </ul>
+ * @author Hunter O'Brien
  * @version 1.0
- * @auth Hunter S O'Brien
+ * @author Hunter O'Brien
  */
 public class Appointment implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
-    // Instance variables to store the appointment's date, description, and location
-    private LocalDateTime dateTime;
-    private String description;
-    private String location;
+    private LocalDateTime startDateTime; // Start date and time of the appointment
+    private LocalDateTime endDateTime;   // End date and time of the appointment
+    private String description;          // Description of the appointment
+    private String location;             // Location of the appointment
 
     /**
-     * Constructor to create an appointment with the specified date, description, and location.
-     * @param dateTime the date and time of the appointment
+     * Constructs a new Appointment with the specified details.
+     * @param startDateTime the start date and time of the appointment
+     * @param endDateTime the end date and time of the appointment
      * @param description the description of the appointment
      * @param location the location of the appointment
      */
-    public Appointment(LocalDateTime dateTime, String description, String location) {
-        this.dateTime = dateTime;
+    public Appointment(LocalDateTime startDateTime, LocalDateTime endDateTime, String description, String location) {
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
         this.description = description;
         this.location = location;
     }
 
     /**
-     * Gets the date and time of the appointment.
-     * @return the date and time of the appointment
+     * Gets the start date and time of the appointment.
+     * @return the start date and time
      */
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
     }
 
     /**
-     * Sets the date and time of the appointment.
-     * @param dateTime the new date and time of the appointment
+     * Sets the start date and time of the appointment.
+     * @param startDateTime the new start date and time
      */
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
+    }
+
+    /**
+     * Gets the end date and time of the appointment.
+     * @return the end date and time
+     */
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
+    }
+
+    /**
+     * Sets the end date and time of the appointment.
+     * @param endDateTime the new end date and time
+     */
+    public void setEndDateTime(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
     }
 
     /**
      * Gets the description of the appointment.
-     * @return the description of the appointment
+     * @return the description
      */
     public String getDescription() {
         return description;
@@ -60,7 +87,7 @@ public class Appointment implements Serializable {
 
     /**
      * Sets the description of the appointment.
-     * @param description the new description of the appointment
+     * @param description the new description
      */
     public void setDescription(String description) {
         this.description = description;
@@ -68,7 +95,7 @@ public class Appointment implements Serializable {
 
     /**
      * Gets the location of the appointment.
-     * @return the location of the appointment
+     * @return the location
      */
     public String getLocation() {
         return location;
@@ -76,24 +103,10 @@ public class Appointment implements Serializable {
 
     /**
      * Sets the location of the appointment.
-     * @param location the new location of the appointment
+     * @param location the new location
      */
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    /**
-     * Compares this appointment to another object for equality.
-     * @param o the object to compare to
-     * @return true if the other object is an Appointment with the same date, description, and location, false otherwise
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof Appointment) {
-            Appointment that = (Appointment) o;
-            return this.dateTime.equals(that.dateTime) && Objects.equals(this.description, that.description) && Objects.equals(this.location, that.location);
-        }
-        return false;
     }
 
     /**
@@ -104,7 +117,8 @@ public class Appointment implements Serializable {
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         return "Appointment{" +
-                "dateTime=" + dateTime.format(formatter) +
+                "startDateTime=" + startDateTime.format(formatter) +
+                ", endDateTime=" + endDateTime.format(formatter) +
                 ", description='" + description + '\'' +
                 ", location='" + location + '\'' +
                 '}';

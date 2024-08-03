@@ -1,27 +1,32 @@
 import java.io.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <h2>AppointmentManager.java - A class to manage appointments with functionalities to add, view, edit, delete, search, save, and load appointments.</h2>
- * <p>This class manages a list of appointments and provides methods to manipulate them, as well as to persist the appointments to a file.</p>
- *
- * <p><b>Problem statement:</b> Create a class to manage appointments, including functionalities to add, view, edit, delete, search, save, and load appointments from a file.</p>
- *
- * <div style="text-align: center;"><code><b>public class AppointmentManager</b></code></div>
- *
- * @version 1.0
- * @auth Hunter S O'Brien
+ * <h2>Manages a collection of appointments, allowing addition, editing, deletion, and search functionality</h2>
+ * <p><b>Description:</b> This class maintains a list of appointments with functionalities to add, view, edit, delete, and search appointments. Appointments can also be saved to and loaded from a file.</p>
+ * <ul>
+ *   <li><code><b>List<Appointment></b></code> appointments - A list to store appointment objects</li>
+ *   <li><code><b>final String</b></code> FILE_NAME - The name of the file used for saving and loading appointments</li>
+ * </ul>
+ * <p><b>Discussion Items:</b></p>
+ * <ul>
+ *   <li>Provides methods for adding, viewing, editing, and deleting appointments</li>
+ *   <li>Includes search functionality by keyword and by date</li>
+ *   <li>Implements methods for saving appointments to a file and loading appointments from a file</li>
+ *   <li>Handles file-related exceptions gracefully</li>
+ * </ul>
+ * @version 1.1
+ * @author Hunter O'Brien
  */
 public class AppointmentManager {
-    // List to store appointments
     private List<Appointment> appointments;
-    // File name to save and load appointments
     private static final String FILE_NAME = "appointments.dat";
 
     /**
-     * Constructor to initialize the appointment manager and load existing appointments from the file.
+     * Constructs an AppointmentManager and loads any existing appointments from the file.
      */
     public AppointmentManager() {
         appointments = new ArrayList<>();
@@ -29,8 +34,8 @@ public class AppointmentManager {
     }
 
     /**
-     * Adds a new appointment to the list.
-     * @param appointment the appointment to add
+     * Adds an appointment to the list.
+     * @param appointment the appointment to be added
      */
     public void addAppointment(Appointment appointment) {
         appointments.add(appointment);
@@ -38,16 +43,16 @@ public class AppointmentManager {
 
     /**
      * Returns a list of all appointments.
-     * @return a list of all appointments
+     * @return a list of appointments
      */
     public List<Appointment> viewAppointments() {
         return new ArrayList<>(appointments);
     }
 
     /**
-     * Edits an existing appointment at the specified index.
+     * Edits an existing appointment at a specified index.
      * @param index the index of the appointment to edit
-     * @param appointment the new appointment data
+     * @param appointment the new appointment details
      */
     public void editAppointment(int index, Appointment appointment) {
         if (index >= 0 && index < appointments.size()) {
@@ -56,7 +61,7 @@ public class AppointmentManager {
     }
 
     /**
-     * Deletes an appointment at the specified index.
+     * Deletes an appointment at a specified index.
      * @param index the index of the appointment to delete
      */
     public void deleteAppointment(int index) {
@@ -68,14 +73,30 @@ public class AppointmentManager {
     }
 
     /**
-     * Searches for appointments that contain the specified keyword in their description or location.
+     * Searches for appointments containing a keyword in the description or location.
      * @param keyword the keyword to search for
-     * @return a list of appointments that match the search criteria
+     * @return a list of matching appointments
      */
     public List<Appointment> searchAppointments(String keyword) {
+        keyword = keyword.toLowerCase();// normalize the keyword
         List<Appointment> result = new ArrayList<>();
         for (Appointment appointment : appointments) {
-            if (appointment.getDescription().contains(keyword) || appointment.getLocation().contains(keyword)) {
+            if (appointment.getDescription().toLowerCase().contains(keyword) || appointment.getLocation().toLowerCase().contains(keyword)) {//normalize the search
+                result.add(appointment);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Searches for appointments occurring on a specific date.
+     * @param date the date to search for
+     * @return a list of appointments on the specified date
+     */
+    public List<Appointment> searchAppointmentsByDate(LocalDate date) {
+        List<Appointment> result = new ArrayList<>();
+        for (Appointment appointment : appointments) {
+            if (appointment.getStartDateTime().toLocalDate().equals(date) || appointment.getEndDateTime().toLocalDate().equals(date)) {
                 result.add(appointment);
             }
         }
@@ -108,8 +129,8 @@ public class AppointmentManager {
     }
 
     /**
-     * Clears the list of appointments.
-     * @return true if the list of appointments is empty after clearing, false otherwise
+     * Clears all appointments from the list.
+     * @return true if the appointments list is empty after clearing
      */
     public boolean clearAppointments() {
         appointments = new ArrayList<>();
